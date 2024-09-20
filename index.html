@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            height: 100vh;
+            background-image: url("logbg3.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .box {
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.425);
+        }
+
+        #hide {
+            display: none;
+        }
+
+        #passbox {
+            padding: 10px 55px 10px 15px;
+            font-size: 20px;
+            font-weight: 500;
+            border: 1px solid rgb(93, 93, 231);
+            background-color: white;
+            border-radius: 8px;
+        }
+
+        #passbox:focus {
+            border-color: tomato;
+        }
+
+        #show {
+            padding: 10px;
+            font-size: 20px;
+            width: 250px;
+            font-weight: 900;
+            border-radius: 8px;
+        }
+
+        p {
+            color: red;
+            font-size: 20px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .passContainer {
+            width: 315px;
+            height: 42px;
+            position: relative;
+            border-radius: 8px;
+        }
+
+        .icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .icon2 {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            display: none;
+        }
+
+        .suggestions li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestions li:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // Check if the user is logged in
+        const loggedIn = localStorage.getItem('loggedIn');
+        if (loggedIn === 'true') {
+            window.location.href = "test2.html";
+        }
+    </script>
+
+    <div class="box">
+        <div>
+            <form id="loginForm">
+                <div class="passContainer">
+                    <input type="password" id="passbox" name="password" placeholder="Your password here" autocomplete="current-password">
+                    <i class="icon fa-solid fa-eye" id="icon"></i>
+                    <i class="icon2 fa-solid fa-eye-slash" id="icon2"></i>
+                    <ul id="suggestions" class="suggestions"></ul>
+                </div>
+
+                <br><br>
+                <input id="show" type="submit" value="Login">
+                <p id="incorrect"></p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const show = document.getElementById('show');
+        const passbox = document.getElementById('passbox');
+        const incorrect = document.getElementById('incorrect');
+        const icon = document.getElementById('icon');
+        const icon2 = document.getElementById('icon2');
+        const suggestions = document.getElementById('suggestions'); // Element for password suggestions
+
+        const pass = "5566AzBy@";
+
+        // Load previously saved passwords
+        const savedPasswords = JSON.parse(localStorage.getItem('savedPasswords')) || [];
+
+        // Show password suggestions when the user clicks inside the input
+        passbox.addEventListener('focus', () => {
+            suggestions.innerHTML = '';
+            savedPasswords.forEach(password => {
+                const li = document.createElement('li');
+                li.textContent = password;
+                li.addEventListener('click', () => {
+                    passbox.value = password;
+                    suggestions.style.display = 'none';
+                    // Trigger form submission after selecting a suggestion
+                    submitForm();
+                });
+                suggestions.appendChild(li);
+            });
+            suggestions.style.display = savedPasswords.length ? 'block' : 'none';
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!passbox.contains(event.target) && !suggestions.contains(event.target)) {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        // Function to handle form submission
+        function submitForm() {
+            const match = passbox.value;
+
+            if (match === pass) {
+                // Save new password
+                if (match && !savedPasswords.includes(match)) {
+                    savedPasswords.push(match);
+                    localStorage.setItem('savedPasswords', JSON.stringify(savedPasswords));
+                }
+                // Set login status
+                localStorage.setItem('loggedIn', 'true');
+                window.location.href = "test2.html";
+            } else {
+                incorrect.innerText = "Incorrect password. Try again";
+                incorrect.style.display = "block"; // Make the incorrect message visible
+                passbox.value = ""; // Clear the password field
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form submission to the same page
+            submitForm();
+        });
+
+        icon.addEventListener("click", () => {
+            passbox.type = "text";
+            icon.style.display = "none";
+            icon2.style.display = "block";
+        });
+
+        icon2.addEventListener("click", () => {
+            passbox.type = "password";
+            icon.style.display = "block";
+            icon2.style.display = "none";
+        });
+    </script>
+</body>
+</html>

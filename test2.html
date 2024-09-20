@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Video Experience</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #090116, #19012b);
+            color: #f0f0f0;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            /* background-color: #11011d; Dark background for navbar */
+            background: linear-gradient(to right, #090116, #19012b);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
+            border-bottom:1px solid #1d053d;
+        }
+
+        .navbar a {
+            color: #f0f0f0; /* Light text color for navbar links */
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            color: #b1b1ff; /* Hover color */
+        }
+
+        .logout {
+            background-color: #b1b1ff; /* Button color */
+            color: #0a0011;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .logout:hover {
+            background-color: #ffffff; /* Hover effect for button */
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 70px;
+            padding: 20px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .video-container {
+            flex: 1 1 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker shadow */
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .controls button {
+            background-color: #0a0011; /* Dark background */
+            color: #f0f0f0; /* Light text */
+            border: 2px solid #b1b1ff;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #b1b1ff;
+            color: #0a0011;
+        }
+
+        .content-heading {
+            flex: 1 1 300px;
+            background-color: #090116;
+            /* background: linear-gradient(to right, #090116, #19012b); */
+            border-radius: 10px;
+            /* border: 1px solid #2c046b; */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker shadow */
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .content-heading h1 {
+            font-size: 18px;
+            color: #b1b1ff; /* Light text color */
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border-bottom: 2px solid #0a0011;
+            border-radius: 5px;
+            padding: 10px;
+            /* background-color: #23023b; Background matching the theme */
+            background: linear-gradient(to right, #1a043d, #19012b);
+            transition: background-color 0.3s;
+        }
+
+        .content-heading h1:hover {
+            background-color: #b1b1ff; /* Hover effect */
+            color: #f6f4f7;
+        }
+
+        /* Hamburger Menu Icon for Mobile View */
+        .hamburger-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 25px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger-menu div {
+            background-color: #f0f0f0; /* Light color for hamburger menu */
+            height: 4px;
+            width: 100%;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #090116; /* Dark background */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Darker shadow */
+            border-radius: 5px;
+            z-index: 1001;
+            width: 90%;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            color: #f0f0f0; /* Light text color */
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 1px solid #0a0011;
+        }
+
+        .dropdown a:hover {
+            background-color: #b1b1ff;
+            color: #0a0011;
+        }
+
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .video-container,
+            .content-heading {
+                flex: 1 1 100%;
+            }
+
+            .content-heading {
+                margin-top: 10px;
+            }
+
+            .navbar {
+                transform: translateY(-100%);
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .dropdown {
+                display: none;
+            }
+
+            .dropdown.show {
+                display: block;
+            }
+            .logoutM{
+                font-size: 25px;
+                width: 100%;
+                font-weight: 900;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                background: linear-gradient(to right, #090116, #19012b);
+                border: none;
+                padding: 10px 0px 10px 0px;
+                color: #c289ee;
+                cursor: pointer;
+
+
+                
+            }
+            .logoutM:hover{
+                background: linear-gradient(to right, #1e0841, #19012b);
+                color: white;
+            }
+        }
+
+        /* Ensure Dropdown is Hidden on Desktop */
+        @media (min-width: 769px) {
+            .dropdown {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Redirect to index.html if not logged in
+        if (!localStorage.getItem('loggedIn')) {
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <div class="hamburger-menu">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="dropdown">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <a href="#services">Services</a>
+        <a href="#blog">Blog</a>
+        <button class="logoutM" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="navbar">
+        <div>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#about-us">About Us</a>
+        </div>
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="main-container">
+        <div class="video-container">
+            <iframe id="video" title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <div class="controls">
+                <button id="prev">Prev</button>
+                <button id="next">Next</button>
+            </div>
+        </div>
+
+        <div class="content-heading">
+            <h1 id="voice">Voice of Dhaka</h1>
+            <h1 id="khalid">Khalid Farhan</h1>
+            <h1 id="prothom">Prothom Alo</h1>
+        </div>
+    </div>
+
+    <script>
+        // Hamburger Menu Toggle Logic for Mobile View
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const dropdown = document.querySelector('.dropdown');
+        let dropdownVisible = false;
+
+        hamburgerMenu.addEventListener('click', () => {
+            dropdownVisible = !dropdownVisible;
+            dropdown.classList.toggle('show', dropdownVisible);
+        });
+
+        // Video Logic
+        let c = 0;
+        const links = [
+            'https://www.youtube.com/embed/ZGcfftOJn0s?si=7zenczxXlaqydcPR',
+            'https://www.youtube.com/embed/5zMwDblYrUQ?si=nMzj_gNmlrxkEXrx',
+            'https://www.youtube.com/embed/Mcrl7FX0sYY?si=oi5QLPbYIio7WbFG'
+        ];
+
+        const videoElement = document.getElementById("video");
+
+        function setVideo(link) {
+            videoElement.src = link;
+        }
+
+        setVideo(links[c]);
+
+        document.getElementById("prev").addEventListener("click", () => {
+            c = (c > 0) ? c - 1 : links.length - 1;
+            setVideo(links[c]);
+        });
+
+        document.getElementById("next").addEventListener("click", () => {
+            c = (c < links.length - 1) ? c + 1 : 0;
+            setVideo(links[c]);
+        });
+
+        document.getElementById("voice").addEventListener("click", () => {
+            setVideo(links[0]);
+        });
+
+        document.getElementById("khalid").addEventListener("click", () => {
+            setVideo(links[1]);
+        });
+
+        document.getElementById("prothom").addEventListener("click", () => {
+            setVideo(links[2]);
+        });
+
+        // Logout Logic
+        function logout() {
+            localStorage.removeItem('loggedIn');
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>
